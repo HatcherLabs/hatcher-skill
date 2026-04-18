@@ -16,8 +16,8 @@ All 5 integrations follow the same shape: human creates an app/bot with the plat
 2. Agent updates config:
 
 ```bash
-curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X PATCH "https://api.hatcher.host/api/v1/agents/$AGENT_ID/config" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "telegram.enabled": true,
@@ -25,7 +25,7 @@ curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
   }'
 ```
 
-3. Restart agent: `POST /v1/agents/$AGENT_ID/restart`. Bot goes live within 10s.
+3. Restart agent: `POST /api/v1/agents/$AGENT_ID/restart`. Bot goes live within 10s.
 
 Per-framework nuance:
 - `elizaos`: requires `@elizaos/plugin-telegram` installed first
@@ -39,8 +39,8 @@ Per-framework nuance:
 2. Agent config:
 
 ```bash
-curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X PATCH "https://api.hatcher.host/api/v1/agents/$AGENT_ID/config" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "discord.enabled": true,
@@ -57,8 +57,8 @@ curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
 2. Agent config:
 
 ```bash
-curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X PATCH "https://api.hatcher.host/api/v1/agents/$AGENT_ID/config" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "twitter.enabled": true,
@@ -76,8 +76,8 @@ Note: Twitter's free tier has strict rate limits. Warn the human if they expect 
 Uses WhatsApp Business Cloud API (Meta). Human registers at `developers.facebook.com`, creates WhatsApp Business account, gets phone number ID + access token.
 
 ```bash
-curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X PATCH "https://api.hatcher.host/api/v1/agents/$AGENT_ID/config" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "whatsapp.enabled": true,
@@ -92,8 +92,8 @@ curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
 2. Agent config:
 
 ```bash
-curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X PATCH "https://api.hatcher.host/api/v1/agents/$AGENT_ID/config" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "slack.enabled": true,
@@ -102,15 +102,15 @@ curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
   }'
 ```
 
-3. Configure event subscriptions at Slack's UI pointing to `https://api.hatcher.host/v1/agents/$AGENT_ID/webhooks/slack`.
+3. Configure event subscriptions at Slack's UI pointing to `https://api.hatcher.host/api/v1/agents/$AGENT_ID/webhooks/slack`.
 
 ## Managing secrets
 
 Tokens are encrypted server-side (AES-256-GCM) before storage. They cannot be read back via the API — only overwritten or deleted. To rotate:
 
 ```bash
-curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X PATCH "https://api.hatcher.host/api/v1/agents/$AGENT_ID/config" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "telegram.botToken": "NEW_TOKEN" }'
 ```
@@ -118,8 +118,8 @@ curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
 To disable an integration:
 
 ```bash
-curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X PATCH "https://api.hatcher.host/api/v1/agents/$AGENT_ID/config" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -d '{ "telegram.enabled": false }'
 ```
 
@@ -129,8 +129,8 @@ Use Hatcher's chat endpoint to send a test message, then verify it appears in th
 
 ```bash
 # For Telegram: ask the agent to send a DM to the human
-curl -sS -X POST "https://api.hatcher.host/v1/agents/$AGENT_ID/chat" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X POST "https://api.hatcher.host/api/v1/agents/$AGENT_ID/chat" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -d '{ "message": "Send @human_username a DM saying hello from Hatcher." }'
 ```
 

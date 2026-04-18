@@ -85,23 +85,23 @@ Requires API key.
 ### From a template (recommended)
 
 ```bash
-curl -sS -X POST https://api.hatcher.host/v1/agents \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X POST https://api.hatcher.host/api/v1/agents \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "templateId": "customer-support",
-    "name": "Support Bot v1",
-    "framework": "openclaw"
+    "framework": "openclaw",
+    "template": "customer-support",
+    "name": "Support Bot v1"
   }'
 ```
 
-If `framework` is omitted, the template's default is used.
+**Both `framework` and `template` are required.** The field is named `template` (the template id string), not `templateId`. Pick a framework that makes sense for the template (the template's `recommendedSkills` object lists which frameworks it works with).
 
 ### From scratch
 
 ```bash
-curl -sS -X POST https://api.hatcher.host/v1/agents \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X POST https://api.hatcher.host/api/v1/agents \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "framework": "hermes",
@@ -140,8 +140,8 @@ Every agent is in exactly one of these statuses at any time:
 ### Inspect full state
 
 ```bash
-curl -sS "https://api.hatcher.host/v1/agents/$AGENT_ID" \
-  -H "x-api-key: $HATCHER_KEY"
+curl -sS "https://api.hatcher.host/api/v1/agents/$AGENT_ID" \
+  -H "Authorization: Bearer $HATCHER_KEY"
 ```
 
 Response fields relevant for an agent managing its deployment:
@@ -172,8 +172,8 @@ Use `startedAt` to check when it last started; `lastActivityAt` to see recent tr
 If you just need the status string (cheap, no DB join):
 
 ```bash
-curl -sS "https://api.hatcher.host/v1/agents/$AGENT_ID/status" \
-  -H "x-api-key: $HATCHER_KEY"
+curl -sS "https://api.hatcher.host/api/v1/agents/$AGENT_ID/status" \
+  -H "Authorization: Bearer $HATCHER_KEY"
 ```
 
 Returns `{ "success": true, "data": { "status": "active" } }`. Use this for tight poll loops.
@@ -181,8 +181,8 @@ Returns `{ "success": true, "data": { "status": "active" } }`. Use this for tigh
 ### Start
 
 ```bash
-curl -sS -X POST "https://api.hatcher.host/v1/agents/$AGENT_ID/start" \
-  -H "x-api-key: $HATCHER_KEY"
+curl -sS -X POST "https://api.hatcher.host/api/v1/agents/$AGENT_ID/start" \
+  -H "Authorization: Bearer $HATCHER_KEY"
 ```
 
 Works from `paused`, `sleeping`, or `killed` states. Allocates a Docker container (5-10s cold start).
@@ -193,8 +193,8 @@ Works from `paused`, `sleeping`, or `killed` states. Allocates a Docker containe
 AGENT_ID=...
 TIMEOUT=60
 for i in $(seq 1 $TIMEOUT); do
-  STATUS=$(curl -sS "https://api.hatcher.host/v1/agents/$AGENT_ID/status" \
-    -H "x-api-key: $HATCHER_KEY" | jq -r '.data.status')
+  STATUS=$(curl -sS "https://api.hatcher.host/api/v1/agents/$AGENT_ID/status" \
+    -H "Authorization: Bearer $HATCHER_KEY" | jq -r '.data.status')
   echo "[$i] status=$STATUS"
   if [ "$STATUS" = "active" ]; then echo "Ready."; break; fi
   if [ "$STATUS" = "error" ] || [ "$STATUS" = "killed" ]; then
@@ -207,8 +207,8 @@ done
 ### Restart
 
 ```bash
-curl -sS -X POST "https://api.hatcher.host/v1/agents/$AGENT_ID/restart" \
-  -H "x-api-key: $HATCHER_KEY"
+curl -sS -X POST "https://api.hatcher.host/api/v1/agents/$AGENT_ID/restart" \
+  -H "Authorization: Bearer $HATCHER_KEY"
 ```
 
 Equivalent to stop + start atomically. Use after config changes that require a container recreate (e.g., tier upgrade resource limits — see `pricing.md`), or to recover from transient `error` state. Status transitions `active` → `restarting` → `active`.
@@ -216,8 +216,8 @@ Equivalent to stop + start atomically. Use after config changes that require a c
 ### Stop
 
 ```bash
-curl -sS -X POST "https://api.hatcher.host/v1/agents/$AGENT_ID/stop" \
-  -H "x-api-key: $HATCHER_KEY"
+curl -sS -X POST "https://api.hatcher.host/api/v1/agents/$AGENT_ID/stop" \
+  -H "Authorization: Bearer $HATCHER_KEY"
 ```
 
 Stops container cleanly. State preserved on disk. Agent can be restarted later. Use this instead of `/delete` when pausing work.
@@ -225,8 +225,8 @@ Stops container cleanly. State preserved on disk. Agent can be restarted later. 
 ### Chat (REST)
 
 ```bash
-curl -sS -X POST "https://api.hatcher.host/v1/agents/$AGENT_ID/chat" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X POST "https://api.hatcher.host/api/v1/agents/$AGENT_ID/chat" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "message": "Summarize our support queue for today." }'
 ```
@@ -242,8 +242,8 @@ Response:
 ### Chat (streaming SSE)
 
 ```bash
-curl -sN "https://api.hatcher.host/v1/agents/$AGENT_ID/chat/stream" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sN "https://api.hatcher.host/api/v1/agents/$AGENT_ID/chat/stream" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "message": "..." }'
 ```
@@ -266,8 +266,8 @@ To keep a non-always-on agent live for longer, buy the per-agent "Always On" add
 ### Delete
 
 ```bash
-curl -sS -X DELETE "https://api.hatcher.host/v1/agents/$AGENT_ID" \
-  -H "x-api-key: $HATCHER_KEY"
+curl -sS -X DELETE "https://api.hatcher.host/api/v1/agents/$AGENT_ID" \
+  -H "Authorization: Bearer $HATCHER_KEY"
 ```
 
 Destructive — removes container, volume, config. No undo. Use `/stop` instead if you want to preserve state.
@@ -277,8 +277,8 @@ Destructive — removes container, volume, config. No undo. Use `/stop` instead 
 If an agent has been in `error` state and you've fixed the cause:
 
 ```bash
-curl -sS -X POST "https://api.hatcher.host/v1/agents/$AGENT_ID/clear-crash-history" \
-  -H "x-api-key: $HATCHER_KEY"
+curl -sS -X POST "https://api.hatcher.host/api/v1/agents/$AGENT_ID/clear-crash-history" \
+  -H "Authorization: Bearer $HATCHER_KEY"
 ```
 
 This resets restart-loop counters that otherwise keep the agent in `killed` state.
@@ -297,8 +297,8 @@ Each framework has a different plugin system:
 Example (openclaw):
 
 ```bash
-curl -sS -X POST "https://api.hatcher.host/v1/agents/$AGENT_ID/skills/install" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X POST "https://api.hatcher.host/api/v1/agents/$AGENT_ID/skills/install" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "skillIds": ["desearch-web-search", "market-research-agent"] }'
 ```
@@ -310,8 +310,8 @@ Plugin/skill caps are tier-based (Free: 3, Starter: 10, Pro: 25, Business/Foundi
 For managed-mode agents (all Hermes + new OpenClaw), config can be updated live:
 
 ```bash
-curl -sS -X PATCH "https://api.hatcher.host/v1/agents/$AGENT_ID/config" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X PATCH "https://api.hatcher.host/api/v1/agents/$AGENT_ID/config" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "model.default": "llama-4-scout-17b", "display.personality": "Terse and to the point." }'
 ```

@@ -12,7 +12,7 @@ api_base: https://api.hatcher.host
 
 Hatcher supports two auth modes:
 1. **JWT bearer tokens** from `POST /auth/login` or `/register` — short-lived (7d default), refresh via `/auth/refresh`. Use for interactive flows.
-2. **API keys** (`hk_` prefix) — long-lived, bearer-style via `x-api-key` header. **Preferred for agents.**
+2. **API keys** (`hk_` prefix) — long-lived, passed via `Authorization: Bearer hk_...` header. **Preferred for agents.**
 
 Email verification is mandatory before most actions work. The agent flow polls `GET /auth/verify-status` to detect when the human has clicked the verify link.
 
@@ -115,13 +115,14 @@ Requires JWT. Soft-deletes (sets `revokedAt`). Revoked keys stop authenticating 
 
 ## Using API keys for agent requests
 
-All `/v1/*` endpoints accept `x-api-key` header:
+All `/api/v1/*` endpoints accept the API key in the `Authorization` header:
 
 ```bash
-curl https://api.hatcher.host/v1/me -H "x-api-key: hk_abc..."
+curl https://api.hatcher.host/api/v1/me \
+  -H "Authorization: Bearer hk_abc..."
 ```
 
-The same endpoints accept `Authorization: Bearer hk_...` too. Pick one style and stick with it in your agent code.
+The API key is detected by its `hk_` prefix — use the same `Authorization: Bearer ...` header as you would for JWT. There is no `x-api-key` header; don't bother sending one.
 
 ## Rate limits for API-key authenticated requests
 

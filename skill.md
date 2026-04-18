@@ -102,19 +102,19 @@ Response contains `{ "data": { "key": "hk_..." } }` — **shown exactly once**. 
 # Pick from 199 templates (public, no auth):
 curl -sS "https://api.hatcher.host/api/templates?limit=5" | jq '.templates[].id'
 
-# Create from a template:
-curl -sS -X POST https://api.hatcher.host/v1/agents \
-  -H "x-api-key: $HATCHER_KEY" \
+# Create from a template (both `framework` and `template` are required fields):
+curl -sS -X POST https://api.hatcher.host/api/v1/agents \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "templateId": "customer-support", "name": "My First Agent" }'
+  -d '{ "framework": "openclaw", "template": "customer-support", "name": "My First Agent" }'
 
 # Start and chat:
 AGENT_ID=...  # from create response
-curl -sS -X POST "https://api.hatcher.host/v1/agents/$AGENT_ID/start" \
-  -H "x-api-key: $HATCHER_KEY"
+curl -sS -X POST "https://api.hatcher.host/api/v1/agents/$AGENT_ID/start" \
+  -H "Authorization: Bearer $HATCHER_KEY"
 
-curl -sS -X POST "https://api.hatcher.host/v1/agents/$AGENT_ID/chat" \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X POST "https://api.hatcher.host/api/v1/agents/$AGENT_ID/chat" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "message": "Hello, introduce yourself." }'
 ```

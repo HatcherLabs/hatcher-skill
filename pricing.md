@@ -58,12 +58,12 @@ Simplest. User pre-funds their account with any rail below, agent consumes credi
 
 ```bash
 # Check balance (requires auth)
-curl -sS https://api.hatcher.host/v1/me \
-  -H "x-api-key: $HATCHER_KEY" | jq '.data.hatchCredits'
+curl -sS https://api.hatcher.host/api/v1/me \
+  -H "Authorization: Bearer $HATCHER_KEY" | jq '.data.hatchCredits'
 
 # Subscribe to a tier using credits (server-side settle, no wallet popup)
 curl -sS -X POST https://api.hatcher.host/features/subscribe-with-credits \
-  -H "x-api-key: $HATCHER_KEY" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "tier": "starter", "billingPeriod": "monthly" }'
 ```
@@ -79,12 +79,12 @@ Backend returns a hosted checkout URL. Agent opens URL in browser (or hands to h
 
 ```bash
 curl -sS -X POST https://api.hatcher.host/stripe/checkout/subscription \
-  -H "x-api-key: $HATCHER_KEY" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "tier": "pro", "billingPeriod": "annual" }'
 ```
 
-Response: `{ "data": { "url": "https://checkout.stripe.com/..." } }`. On success, webhook activates the tier server-side — agent polls `GET /v1/me` until `tier === "pro"`.
+Response: `{ "data": { "url": "https://checkout.stripe.com/..." } }`. On success, webhook activates the tier server-side — agent polls `GET /api/v1/me` until `tier === "pro"`.
 
 ### 3. SOL (native Solana)
 
@@ -96,7 +96,7 @@ curl -sS "https://api.hatcher.host/prices?tier=starter&billingPeriod=monthly" | 
 
 # After signing and submitting to Solana, notify Hatcher:
 curl -sS -X POST https://api.hatcher.host/features/subscribe \
-  -H "x-api-key: $HATCHER_KEY" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "tier": "starter", "billingPeriod": "monthly", "paymentToken": "sol", "txSignature": "..." }'
 ```
@@ -113,7 +113,7 @@ Upgrading to a higher tier refunds unused days of the current tier as HATCHER cr
 
 ```bash
 curl -sS -X POST https://api.hatcher.host/features/subscribe-with-credits \
-  -H "x-api-key: $HATCHER_KEY" \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "tier": "pro", "billingPeriod": "monthly" }'
 ```
@@ -125,8 +125,8 @@ Downgrade: no refund. Current tier runs until expiry, then the chosen lower tier
 Any tier can switch to BYOK for LLM keys (OpenAI, Anthropic, Groq, etc.) — bypasses all message/search quotas but user pays the LLM provider directly.
 
 ```bash
-curl -sS -X PATCH https://api.hatcher.host/v1/agents/$AGENT_ID/config \
-  -H "x-api-key: $HATCHER_KEY" \
+curl -sS -X PATCH https://api.hatcher.host/api/v1/agents/$AGENT_ID/config \
+  -H "Authorization: Bearer $HATCHER_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "byok.provider": "anthropic", "byok.apiKey": "sk-ant-..." }'
 ```
