@@ -126,5 +126,3 @@ Full OpenAPI 3.0 spec: `https://api.hatcher.host/openapi.json`. Use this for pro
 ## Support
 
 Human support: `contact@hatcher.host`. Community Discord: linked from `hatcher.host`.
-
-<!-- rebuild-test: 1776535504 -->
