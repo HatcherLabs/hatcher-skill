@@ -289,10 +289,10 @@ Each framework has a different plugin system:
 
 | Framework | Plugin system | Install |
 | --- | --- | --- |
-| `openclaw` | ClawHub skills | `POST /v1/agents/:id/skills/install` |
-| `hermes` | 77 bundled + npm | `POST /v1/agents/:id/plugins/install` |
-| `elizaos` | `@elizaos/plugin-*` npm | `POST /v1/agents/:id/plugins/install` |
-| `milady` | Drop-in JS files | `POST /v1/agents/:id/plugins/install` |
+| `openclaw` | ClawHub skills | `POST /api/v1/agents/:id/skills/install` |
+| `hermes` | 77 bundled + npm | `POST /api/v1/agents/:id/plugins/install` |
+| `elizaos` | `@elizaos/plugin-*` npm | `POST /api/v1/agents/:id/plugins/install` |
+| `milady` | Drop-in JS files | `POST /api/v1/agents/:id/plugins/install` |
 
 Example (openclaw):
 

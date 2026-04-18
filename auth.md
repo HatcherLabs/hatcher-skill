@@ -134,7 +134,7 @@ Based on the account's tier (not the key):
 | Starter | 10,000 |
 | Pro / Business / Founding | 100,000 |
 
-`GET /v1/usage` returns current usage + reset time.
+`GET /api/v1/usage` returns current usage + reset time.
 
 ## See also
 
