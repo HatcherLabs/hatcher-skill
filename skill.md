@@ -14,17 +14,19 @@ This file is the index. Fetch the satellite files below as you need them — don
 
 ## Satellite files — fetch as needed
 
+Use the absolute URLs — relative paths resolve to `hatcher.host/<file>.md` which serves the web app, not the markdown.
+
 | File | When to fetch |
 | --- | --- |
-| [`auth.md`](./auth.md) | Registering, email verification polling, creating API keys |
-| [`agents.md`](./agents.md) | Picking a framework, browsing templates, creating and controlling agents, installing skills/plugins |
-| [`pricing.md`](./pricing.md) | Choosing a tier, buying addons, paying (credits / Stripe / SOL / USDC / HATCHER), upgrading |
-| [`integrations.md`](./integrations.md) | Wiring a deployed agent to Telegram / Discord / Twitter / WhatsApp / Slack |
+| [`auth.md`](https://hatcher.host/skill/auth.md) | Registering, email verification polling, creating API keys |
+| [`agents.md`](https://hatcher.host/skill/agents.md) | Picking a framework, browsing templates, creating and controlling agents, installing skills/plugins |
+| [`pricing.md`](https://hatcher.host/skill/pricing.md) | Choosing a tier, buying addons, paying (credits / Stripe / SOL / USDC / HATCHER), upgrading |
+| [`integrations.md`](https://hatcher.host/skill/integrations.md) | Wiring a deployed agent to Telegram / Discord / Twitter / WhatsApp / Slack |
 
-Canonical URLs (either work):
+Canonical URLs (both serve identical content):
 
-- `https://hatcher.host/skill.md`
-- `https://raw.githubusercontent.com/HatcherLabs/hatcher-skill/main/skill.md`
+- `https://hatcher.host/skill.md` (+ `/skill/<name>.md` for satellites)
+- `https://raw.githubusercontent.com/HatcherLabs/hatcher-skill/main/skill.md` (+ `/main/<name>.md` for satellites)
 
 ## User-agent convention
 
